@@ -3,8 +3,8 @@ const  {verifyTokenAndAuthorization, verifyTokenAndAdmin}  = require("./verifyTo
 
 const router = require("express").Router();
 
-//ACTUALIZAR
-router.put("/:id", verifyTokenAndAuthorization, async (req, res) =>{
+//EDIT USER
+router.put("/edit/:id", verifyTokenAndAuthorization, async (req, res) =>{
     if(req.body.password){
         req.body.password = CryptoJS.AES.encrypt(req.body.password , process.env.SECRET_PASSWORD).toString();
 
@@ -22,8 +22,8 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) =>{
 });
 
 
-//DELETE
-router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
+//DELETE USER
+router.delete("/delete/:id", verifyTokenAndAuthorization, async (req, res) => {
     try{
         await User.findByIdAndDelete(req.params.id)
         res.status(200).json("usuario borrado")
@@ -33,7 +33,7 @@ router.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
 });
 
 
-//GET BY ID
+//GET USER BY ID
 router.get("/find/:id", verifyTokenAndAdmin, async (req, res) => {
     try{
         const user = await User.findById(req.params.id);
@@ -62,7 +62,6 @@ router.get("/allUsers", verifyTokenAndAdmin, async (req, res) => {
 
 
 //STATS USERS 
-
 router.get("/stats", verifyTokenAndAdmin, async (req, res) =>{
     const date = new Date();
     const lastYear = new Date(date.setFullYear(date.getFullYear() - 1 ));
