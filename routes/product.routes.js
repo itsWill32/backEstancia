@@ -4,16 +4,20 @@ const  {verifyTokenAndAuthorization, verifyTokenAndAdmin}  = require("./verifyTo
 const router = require("express").Router();
 
 //CREATE PRODUCT
-router.post("/createProduct", verifyTokenAndAdmin, async (req, res) => {
+router.post("/createProduct", async (req, res) => {
+    console.log("Datos recibidos en el backend:", req.body);    
     const newProduct = new Product(req.body);
-
-    try{
-        const savedProduct = await newProduct.save();
-        res.status(200).json("producto guardado")
-    }catch(err){
-        res.status(500).json(err)
+  
+    try {
+      const savedProduct = await newProduct.save();
+      console.log("Producto guardado con éxito:", savedProduct);
+      res.status(200).json(savedProduct);
+    } catch (err) {
+      console.error("Error al guardar el producto:", err); 
+      res.status(500).json({ message: "Error al guardar el producto", error: err.message });
     }
-});
+  });
+  
 
 //UPDATE PRODUCT
 router.put("/update/:id", verifyTokenAndAdmin, async (req, res) =>{
@@ -42,17 +46,32 @@ router.delete("/delete/:id", verifyTokenAndAdmin, async (req, res) => {
 
 
 //GET PRODUCTO BY ID
+// router.get("/find/:id",  async (req, res) => {
+//     try{
+//         const Product = await Product.findById(req.params.id);
+
+
+//         res.status(200).json(Product);
+
+//     }catch(err){
+//         res.status(500).json(err)
+//     }
+// });
+
 router.get("/find/:id", async (req, res) => {
-    try{
-        const Product = await Product.findById(req.params.id);
-
-
-        res.status(200).json(Product);
-
-    }catch(err){
-        res.status(500).json(err)
+    try {
+      const product = await Product.findById(req.params.id); 
+  
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+  
+      res.status(200).json(product);
+    } catch (err) {
+      console.error("Error al obtener el producto por ID:", err.message);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-});
+  });
 
 //GET ALL PRODUCTS 
 router.get("/allProducts", async (req, res) => {

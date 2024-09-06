@@ -62,7 +62,7 @@ router.get("/allUsers", verifyTokenAndAdmin, async (req, res) => {
 
 
 //STATS USERS 
-router.get("/stats", verifyTokenAndAdmin, async (req, res) =>{
+router.get("/stats", async (req, res) =>{
     const date = new Date();
     const lastYear = new Date(date.setFullYear(date.getFullYear() - 1 ));
 
